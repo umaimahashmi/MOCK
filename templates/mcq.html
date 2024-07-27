@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MCQ</title>
+    <script>
+      window.onload = function () {
+        var elapsed_time = document
+          .getElementById("timer")
+          .getAttribute("data-elapsed-time");
+        var total_seconds = 600 - elapsed_time; // 10 minutes = 600 seconds
+        var c_minutes = parseInt(total_seconds / 60);
+        var c_seconds = parseInt(total_seconds % 60);
+
+        function CheckTime() {
+          document.getElementById("timer").innerHTML =
+            "Time Left: " + c_minutes + " minutes " + c_seconds + " seconds ";
+          if (total_seconds <= 0) {
+            alert("Time is up!");
+            window.location.href = "{{ url_for('results') }}"; // Redirect to results when time is up
+          } else {
+            total_seconds = total_seconds - 1;
+            c_minutes = parseInt(total_seconds / 60);
+            c_seconds = parseInt(total_seconds % 60);
+            setTimeout(CheckTime, 1000);
+          }
+        }
+        CheckTime();
+      };
+    </script>
+  </head>
+  <body>
+    <h1>MCQ {{ mcq['number'] }} - {{ mcq['subject'] }}</h1>
+    <!-- Display question number and subject -->
+    <p>{{ mcq['question'] }}</p>
+    {% if error %}
+    <p style="color: red">{{ error }}</p>
+    {% endif %}
+    <form id="mcq-form" action="{{ url_for('submit_answer') }}" method="post">
+      {% for option_letter, option_text in mcq['options'].items() %}
+      <input type="radio" name="answer" value="{{ option_letter }}" /> {{
+      option_letter }}. {{ option_text }}<br />
+      {% endfor %}
+      <button type="submit">Next</button>
+    </form>
+    <form action="{{ url_for('skip_mcq') }}" method="post">
+      <button type="submit">Skip</button>
+    </form>
+    <div id="timer" data-elapsed-time="{{ elapsed_time }}"></div>
+  </body>
+</html>

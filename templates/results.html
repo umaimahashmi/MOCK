@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Results</title>
+  </head>
+  <body>
+    <h1>Results</h1>
+    <p>Total Correct: {{ total_correct }} / {{ total_questions }}</p>
+    <ul>
+      {% for subject, score in scores.items() %}
+      <li>{{ subject }}: {{ score['correct'] }} / {{ score['total'] }}</li>
+      {% endfor %}
+    </ul>
+    <h2>Answer Key</h2>
+    <ul>
+      {% for mcq, user_answer in answers %}
+      <li>
+        <strong>Question {{ mcq['number'] }}:</strong> {{ mcq['question'] }}<br />
+        <strong>Your Answer:</strong> {{ user_answer }} - {{
+        mcq['options'][user_answer] if user_answer in mcq['options'] else
+        'Skipped' }}<br />
+        <strong>Correct Answer:</strong> {{ mcq['correct_option'] }} - {{
+        mcq['options'][mcq['correct_option']] }}<br />
+      </li>
+      {% endfor %}
+    </ul>
+    <h2>All Questions</h2>
+    <ul>
+      {% for mcq in mcqs %}
+      <li>
+        <strong>Question {{ mcq['number'] }}:</strong> {{ mcq['question'] }}<br />
+        <strong>Correct Answer:</strong> {{ mcq['correct_option'] }} - {{
+        mcq['options'][mcq['correct_option']] }}<br />
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
